@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="build-id" content="bd4743de">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — STUDIO OCTAZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ DESIGN TOKENS ============ */
+  :root{
+    --bg:#0a0a0d; --bg-panel:#111114;
+    --line:#242429; --line-soft:#1a1a1e;
+    --hi:#f2f1ec; --text:#cfceca; --mid:#98979f; --dim:#5c5b63;
+    --accent:#c9973f;
+    --maxw:1280px;
+    --gutter:40px;            /* 좌우 여백 (모든 섹션 공통) */
+    --sec-y:120px;            /* 섹션 상하 여백 */
+    --head-gap:48px;          /* 섹션 헤더 -> 콘텐츠 */
+    --fs-h2:clamp(26px,3vw,38px);
+    --fs-lead:16px;  --lh-lead:1.75;  --measure-lead:34em;
+    --fs-body:17px;  --lh-body:1.85;  --measure-body:31em;
+    --fs-card:14px;  --lh-card:1.7;
+  }
+  @media (max-width:860px){
+    :root{--gutter:22px;--sec-y:80px;--head-gap:36px;}
+  }
+
+  /* ============ BASE ============ */
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+  body{
+    background:var(--bg);color:var(--hi);
+    font-family:'Noto Sans KR', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+    font-weight:300;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    word-break:keep-all;line-break:strict;overflow-wrap:break-word;
+  }
+  ::selection{background:var(--accent);color:#0a0a0d;}
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+  button{font-family:inherit;}
+  h1,h2,h3{text-wrap:balance;}
+  p{text-wrap:pretty;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter);}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+  /* ============ NAV ============ */
+  .logo{font-size:15px;letter-spacing:0.14em;font-weight:600;}
+  .logo span{color:var(--mid);font-weight:300;}
+  nav ul{list-style:none;display:flex;gap:36px;}
+  nav a{font-size:14px;color:var(--mid);font-weight:400;transition:color .25s ease;position:relative;}
+  nav a:hover,nav a.active{color:var(--hi);}
+  nav a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--accent);transition:width .3s ease;}
+  nav a:hover::after,nav a.active::after{width:100%;}
+  .nav-toggle{display:none;background:none;border:none;color:var(--hi);font-size:22px;cursor:pointer;}
+
+  /* ============ COMPONENTS ============ */
+  .btn-primary{
+    display:inline-flex;align-items:center;gap:12px;padding:15px 28px;
+    border:1px solid var(--hi);border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap;
+    transition:background .25s ease,color .25s ease;
+  }
+  .btn-primary:hover{background:var(--hi);color:var(--bg);}
+  .link-more{
+    position:relative;display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--hi);white-space:nowrap;
+    padding:14px 4px;min-height:44px;
+    transition:color .25s ease;
+  }
+  .link-more::before{content:"";position:absolute;left:4px;right:4px;bottom:10px;height:1px;background:var(--accent);}
+  .link-more::after{content:"→";transition:transform .25s ease;}
+  .link-more:hover{color:var(--accent);}
+  .link-more:hover::after{transform:translateX(3px);}
+
+  /* 섹션 헤더: 제목+설명은 좌측 그룹, 링크는 우측 독립 */
+  .section-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    gap:24px 48px;margin-bottom:var(--head-gap);
+  }
+  .head-text{display:flex;flex-direction:column;gap:14px;min-width:0;}
+  .section-head h2{font-size:var(--fs-h2);font-weight:600;letter-spacing:-0.01em;line-height:1.25;}
+  .section-head p,.lead{
+    font-size:var(--fs-lead);line-height:var(--lh-lead);color:var(--mid);
+    max-width:var(--measure-lead);text-wrap:balance;
+  }
+
+  /* 작업물 카드 */
+  .work-scroll{
+    display:flex;gap:24px;overflow-x:auto;padding-bottom:12px;scroll-snap-type:x proximity;
+    -ms-overflow-style:none;scrollbar-width:none;cursor:grab;
+  }
+  .work-scroll::-webkit-scrollbar{display:none;}
+  .work-scroll.dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto;}
+  .work-scroll img{-webkit-user-drag:none;user-select:none;}
+  .work-card{scroll-snap-align:start;flex:0 0 460px;}
+  .work-thumb{
+    width:100%;aspect-ratio:16/9;border-radius:4px;position:relative;overflow:hidden;
+    border:1px solid var(--line);transition:transform .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .work-thumb img{width:100%;height:100%;object-fit:cover;}
+  .work-card:hover .work-thumb{transform:translateY(-6px);}
+  .work-meta{margin-top:16px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;}
+  .work-meta h3{font-size:16px;font-weight:500;line-height:1.4;}
+  .work-meta span{font-size:13px;color:var(--mid);line-height:1.5;}
+  .work-card.placeholder .work-thumb{border-style:dashed;background:transparent;display:flex;align-items:center;justify-content:center;}
+  .work-card.placeholder .placeholder-inner{color:var(--dim);font-size:13px;line-height:1.7;text-align:center;padding:24px;}
+  @media (max-width:860px){.work-card{flex-basis:82vw;}}
+
+  /* 가로 스크롤 버튼 */
+  .sc-wrap{position:relative;}
+  .sc-btn{position:absolute;top:calc(50% - 35px);transform:translateY(-50%);z-index:5;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(10,10,13,.75);color:var(--hi);display:flex;align-items:center;justify-content:center;padding:0;line-height:0;cursor:pointer;backdrop-filter:blur(4px);transition:border-color .25s ease;}
+  .sc-btn:hover{border-color:var(--accent);}
+  .sc-prev{left:-14px;}.sc-next{right:-14px;}
+  
+
+  /* 푸터 */
+  .contact-row{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;gap:32px 40px;}
+  .contact-col h4{font-size:12px;color:var(--dim);margin-bottom:14px;font-weight:400;}
+  .contact-col a,.contact-col p{font-size:15px;color:var(--mid);line-height:1.9;overflow-wrap:anywhere;}
+  .contact-col a:hover{color:var(--hi);}
+  .foot-bottom{
+    margin-top:64px;padding-top:24px;border-top:1px solid var(--line-soft);
+    display:flex;justify-content:space-between;font-size:12px;color:var(--dim);flex-wrap:wrap;gap:12px;
+  }
+  @media (max-width:1080px){.contact-row{grid-template-columns:repeat(2,minmax(0,1fr));justify-content:stretch;}}
+  @media (max-width:520px){.contact-row{grid-template-columns:1fr;}}
+
+  @media (prefers-reduced-motion: reduce){
+    .work-thumb{transition:none;}
+  }
+
+  /* ============ WORK PAGE ============ */
+  header{
+    position:relative;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    max-width:var(--maxw);margin:0 auto;padding:26px var(--gutter);
+  }
+  .page-head{padding-top:64px;}
+  .page-head::after{content:"";display:block;height:1px;background:var(--line);margin-top:72px;}
+  .page-head .eyebrow{font-size:13px;color:var(--mid);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+  .page-head .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .page-head h1{font-size:clamp(34px,5vw,58px);font-weight:600;letter-spacing:-0.01em;line-height:1.15;max-width:16ch;}
+  .page-head .desc{margin-top:20px;font-size:var(--fs-lead);line-height:var(--lh-lead);color:var(--mid);max-width:var(--measure-lead);text-wrap:balance;}
+
+  .work-section{padding-top:72px;padding-bottom:40px;}
+  .cat-section{padding-bottom:64px;}
+  .cat-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;gap:16px;}
+  .cat-head h2{font-size:22px;font-weight:600;letter-spacing:-0.01em;line-height:1.3;}
+  .cat-head .count{font-size:13px;color:var(--dim);}
+  .work-card{flex-basis:380px;}
+  @media (max-width:860px){.work-card{flex-basis:82vw;}}
+
+  .more-work{padding-bottom:96px;}
+  .more-work-box{border-top:1px solid var(--line);padding-top:56px;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;}
+  .more-work-box p{font-size:18px;line-height:1.8;color:var(--text);max-width:52em;text-wrap:balance;}
+
+  footer{padding:0 0 48px;border-top:1px solid var(--line);}
+  .contact-row{padding-top:48px;}
+
+  @media (max-width:860px){
+    header{padding:20px var(--gutter);}
+    nav{position:fixed;top:0;right:0;height:100vh;width:78%;max-width:320px;background:var(--bg-panel);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .35s ease;display:flex;align-items:center;z-index:60;}
+    nav.open{transform:translateX(0);}
+    nav ul{flex-direction:column;gap:26px;padding:0 40px;}
+    .nav-toggle{display:block;}
+    .work-section{padding-top:48px;padding-bottom:24px;}
+    .cat-section{padding-bottom:44px;}
+    .page-head::after{margin-top:48px;}
+    .more-work-box p{font-size:17px;max-width:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">STUDIO<span> OCTAZ</span></a>
+  <nav id="nav">
+    <ul>
+      <li><a href="index.html#work" class="active">Work</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">☰</button>
+</header>
+
+<section class="wrap page-head">
+  <p class="eyebrow"><span class="dot"></span>Selected Work</p>
+  <h1>작업물</h1>
+  <p class="desc">광고·홍보영상부터 웹예능, 중계, 모션그래픽, 뮤직비디오까지 STUDIO&nbsp;OCTAZ가 진행한 작업입니다.</p>
+</section>
+
+<section class="wrap work-section">
+<div class="cat-section"><div class="cat-head"><h2>광고 / 홍보영상</h2></div><div class="work-scroll"><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-02.webp?v=638bb772" alt="KB 국민은행 나라사랑카드 2024" loading="lazy"></div><div class="work-meta"><h3>KB 국민은행</h3><span>나라사랑카드 2024</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-03.webp?v=aff6e14b" alt="KB 국민은행 나라사랑카드 2025" loading="lazy"></div><div class="work-meta"><h3>KB 국민은행</h3><span>나라사랑카드 2025</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-18.webp?v=ab9afeb9" alt="웅진싱크빅 북스토리" loading="lazy"></div><div class="work-meta"><h3>웅진싱크빅</h3><span>북스토리</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-11.webp?v=605b51ec" alt="펠리칸 2025 홍보영상" loading="lazy"></div><div class="work-meta"><h3>펠리칸</h3><span>2025 홍보영상</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-17.webp?v=b1aafec2" alt="에어무드 브랜드필름" loading="lazy"></div><div class="work-meta"><h3>에어무드</h3><span>브랜드필름</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-15.webp?v=131f974f" alt="보안뉴스 보안 캠페인" loading="lazy"></div><div class="work-meta"><h3>보안뉴스</h3><span>보안 캠페인</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-06.webp?v=2f585a09" alt="NSR 국가보안기술연구소 2025 홍보영상" loading="lazy"></div><div class="work-meta"><h3>NSR 국가보안기술연구소</h3><span>2025 홍보영상</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-12.webp?v=a1bd444f" alt="파이브애드 홍보영상" loading="lazy"></div><div class="work-meta"><h3>파이브애드</h3><span>홍보영상</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-13.webp?v=bc4e4ba9" alt="패스트파이브 브랜드 홍보영상" loading="lazy"></div><div class="work-meta"><h3>패스트파이브</h3><span>브랜드 홍보영상</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-14.webp?v=8c5a0e23" alt="패스트파이브 우연못 티저영상" loading="lazy"></div><div class="work-meta"><h3>패스트파이브</h3><span>우연못 티저영상</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-22.webp?v=ab76e567" alt="파이브클라우드 홍보영상" loading="lazy"></div><div class="work-meta"><h3>파이브클라우드</h3><span>홍보영상</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-01.webp?v=3474b069" alt="Bayer Korea 카네스텐 / 촬영" loading="lazy"></div><div class="work-meta"><h3>Bayer Korea</h3><span>카네스텐 / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-05.webp?v=caea5223" alt="LG CNS Entrue / 촬영" loading="lazy"></div><div class="work-meta"><h3>LG CNS</h3><span>Entrue / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-09.webp?v=3c7b72b4" alt="한국타이어 iON Electric Tire / 모션그래픽" loading="lazy"></div><div class="work-meta"><h3>한국타이어</h3><span>iON Electric Tire / 모션그래픽</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-04.webp?v=c0e94ba8" alt="KT AI 홍보영상 / 3D" loading="lazy"></div><div class="work-meta"><h3>KT</h3><span>AI 홍보영상 / 3D</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-07.webp?v=54fb26f7" alt="TNH 브랜드 홍보영상 / 모션그래픽" loading="lazy"></div><div class="work-meta"><h3>TNH</h3><span>브랜드 홍보영상 / 모션그래픽</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-08.webp?v=35be8953" alt="환경부 2025 환경부 뭐함? / 촬영" loading="lazy"></div><div class="work-meta"><h3>환경부</h3><span>2025 환경부 뭐함? / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-10.webp?v=dfeb0c41" alt="경기콘텐츠진흥원 2024 브랜드캠페인 / 촬영" loading="lazy"></div><div class="work-meta"><h3>경기콘텐츠진흥원</h3><span>2024 브랜드캠페인 / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-16.webp?v=34734768" alt="수프라 그레이 23 F/W 컬렉션 / 촬영" loading="lazy"></div><div class="work-meta"><h3>수프라</h3><span>그레이 23 F/W 컬렉션 / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-19.webp?v=88a67e15" alt="하나카드 원큐페이 / 촬영" loading="lazy"></div><div class="work-meta"><h3>하나카드</h3><span>원큐페이 / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-20.webp?v=16dedae6" alt="하나카드 마이데이터 / 촬영" loading="lazy"></div><div class="work-meta"><h3>하나카드</h3><span>마이데이터 / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-21.webp?v=c163e3f9" alt="하나카드 마이데이터2 / 촬영" loading="lazy"></div><div class="work-meta"><h3>하나카드</h3><span>마이데이터2 / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-23.webp?v=48b5888a" alt="롯데건설 그룹조회 / 촬영" loading="lazy"></div><div class="work-meta"><h3>롯데건설</h3><span>그룹조회 / 촬영</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/ad/ad-24.webp?v=65dd9510" alt="포인트유 카페편 / 촬영" loading="lazy"></div><div class="work-meta"><h3>포인트유</h3><span>카페편 / 촬영</span></div></article></div></div>
+<div class="cat-section"><div class="cat-head"><h2>웹예능 / 웹드라마</h2></div><div class="work-scroll"><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-01.webp?v=9eca3019" alt="CJ 올리브 네트웍스 교육영상 코딩편" loading="lazy"></div><div class="work-meta"><h3>CJ 올리브 네트웍스</h3><span>교육영상 코딩편</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-02.webp?v=490bef8d" alt="CJ 올리브 네트웍스 교육영상 마케터편" loading="lazy"></div><div class="work-meta"><h3>CJ 올리브 네트웍스</h3><span>교육영상 마케터편</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-03.webp?v=c3b27734" alt="KB부동산 대리기행" loading="lazy"></div><div class="work-meta"><h3>KB부동산</h3><span>대리기행</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-04.webp?v=ba4ce8f0" alt="KB부동산 집보다" loading="lazy"></div><div class="work-meta"><h3>KB부동산</h3><span>집보다</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-05.webp?v=a26a2cf6" alt="SSG 쓱데이" loading="lazy"></div><div class="work-meta"><h3>SSG</h3><span>쓱데이</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-06.webp?v=6cd68650" alt="킷캣 킷캣유랑단" loading="lazy"></div><div class="work-meta"><h3>킷캣</h3><span>킷캣유랑단</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-07.webp?v=f440c88e" alt="현대 큐밍 사용안내 가이드" loading="lazy"></div><div class="work-meta"><h3>현대 큐밍</h3><span>사용안내 가이드</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-08.webp?v=14223e6a" alt="한샘 PKG 공사" loading="lazy"></div><div class="work-meta"><h3>한샘</h3><span>PKG 공사</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-09.webp?v=cd059ced" alt="한샘 우수사원 인터뷰" loading="lazy"></div><div class="work-meta"><h3>한샘</h3><span>우수사원 인터뷰</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-10.webp?v=31aff18e" alt="드림플러스 WEB3 it슈체크" loading="lazy"></div><div class="work-meta"><h3>드림플러스</h3><span>WEB3 it슈체크</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-11.webp?v=b91d3deb" alt="쏘카 쏘카포폴레이" loading="lazy"></div><div class="work-meta"><h3>쏘카</h3><span>쏘카포폴레이</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-12.webp?v=7d4c4106" alt="쏘카 서비스 이용가이드" loading="lazy"></div><div class="work-meta"><h3>쏘카</h3><span>서비스 이용가이드</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-13.webp?v=1cb11277" alt="세종대학교 학과체크" loading="lazy"></div><div class="work-meta"><h3>세종대학교</h3><span>학과체크</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-14.webp?v=9223910f" alt="세종대학교 세종대 CTL" loading="lazy"></div><div class="work-meta"><h3>세종대학교</h3><span>세종대 CTL</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-15.webp?v=224402ab" alt="서울물재생체험관 물재생센터의 하루" loading="lazy"></div><div class="work-meta"><h3>서울물재생체험관</h3><span>물재생센터의 하루</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-16.webp?v=e4eaca7e" alt="펠리칸 쇼트트랙 국가대표 인터뷰" loading="lazy"></div><div class="work-meta"><h3>펠리칸</h3><span>쇼트트랙 국가대표 인터뷰</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-18.webp?v=958123a4" alt="한샘 키친바흐" loading="lazy"></div><div class="work-meta"><h3>한샘</h3><span>키친바흐</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/webshow/webshow-17.webp?v=ee603a29" alt="하나카드 원큐페이 / 촬영" loading="lazy"></div><div class="work-meta"><h3>하나카드</h3><span>원큐페이 / 촬영</span></div></article></div></div>
+<div class="cat-section"><div class="cat-head"><h2>스케치 / 메이킹필름</h2></div><div class="work-scroll"><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-01.webp?v=5bd06baf" alt="파이브애드 오틀리 행사" loading="lazy"></div><div class="work-meta"><h3>파이브애드</h3><span>오틀리 행사</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-02.webp?v=3e2a61c6" alt="부평문화재단 토크콘서트" loading="lazy"></div><div class="work-meta"><h3>부평문화재단</h3><span>토크콘서트</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-03.webp?v=4fec8188" alt="세종대학교 대동제" loading="lazy"></div><div class="work-meta"><h3>세종대학교</h3><span>대동제</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-04.webp?v=8155131a" alt="세종대학교 여름, 세종" loading="lazy"></div><div class="work-meta"><h3>세종대학교</h3><span>여름, 세종</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-05.webp?v=ef1de8f3" alt="서울물재생체험관 2026 어린이박람회" loading="lazy"></div><div class="work-meta"><h3>서울물재생체험관</h3><span>2026 어린이박람회</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-06.webp?v=55af7ccb" alt="서울물재생체험관 특별전시" loading="lazy"></div><div class="work-meta"><h3>서울물재생체험관</h3><span>특별전시</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-07.webp?v=dfffad98" alt="신한은행 한국금융사박물관" loading="lazy"></div><div class="work-meta"><h3>신한은행</h3><span>한국금융사박물관</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/sketch/sketch-08.webp?v=689d7109" alt="아임에코 원더러스트" loading="lazy"></div><div class="work-meta"><h3>아임에코</h3><span>원더러스트</span></div></article></div></div>
+<div class="cat-section"><div class="cat-head"><h2>중계 송출</h2></div><div class="work-scroll"><article class="work-card"><div class="work-thumb"><img src="images/live/live-04.webp?v=9747a24c" alt="영화 쥬라기 월드 내한행사 " loading="lazy"></div><div class="work-meta"><h3>영화 쥬라기 월드 내한행사</h3></div></article><article class="work-card"><div class="work-thumb"><img src="images/live/live-05.webp?v=e0c8d911" alt="영화 악마는 프라다를 입는다2 내한행사 " loading="lazy"></div><div class="work-meta"><h3>영화 악마는 프라다를 입는다2 내한행사</h3></div></article><article class="work-card"><div class="work-thumb"><img src="images/live/live-06.webp?v=6b5e880a" alt="영화 오디세이 내한행사 " loading="lazy"></div><div class="work-meta"><h3>영화 오디세이 내한행사</h3></div></article><article class="work-card"><div class="work-thumb"><img src="images/live/live-07.webp?v=47dfd1a8" alt="영화 디거 내한행사 " loading="lazy"></div><div class="work-meta"><h3>영화 디거 내한행사</h3></div></article><article class="work-card"><div class="work-thumb"><img src="images/live/live-02.webp?v=56454c95" alt="드라마 북극성 레드카펫 " loading="lazy"></div><div class="work-meta"><h3>드라마 북극성 레드카펫</h3></div></article><article class="work-card"><div class="work-thumb"><img src="images/live/live-01.webp?v=df709d3a" alt="대행선연구원 2026 학술대회" loading="lazy"></div><div class="work-meta"><h3>대행선연구원</h3><span>2026 학술대회</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/live/live-03.webp?v=358149cf" alt="대행선연구원 제9회 학술대회" loading="lazy"></div><div class="work-meta"><h3>대행선연구원</h3><span>제9회 학술대회</span></div></article></div></div>
+<div class="cat-section"><div class="cat-head"><h2>모션그래픽</h2></div><div class="work-scroll"><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-01.webp?v=a1c04394" alt="넷플릭스 오징어게임3 제작발표회 / VJ" loading="lazy"></div><div class="work-meta"><h3>넷플릭스</h3><span>오징어게임3 제작발표회 / VJ</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-02.webp?v=dd7965e3" alt="넷플릭스 웬즈데이2 / VJ" loading="lazy"></div><div class="work-meta"><h3>넷플릭스</h3><span>웬즈데이2 / VJ</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-03.webp?v=ed4a35ac" alt="패스트파이브 인지도 광고" loading="lazy"></div><div class="work-meta"><h3>패스트파이브</h3><span>인지도 광고</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-04.webp?v=5fd660c9" alt="패스트파이브 베네핏 광고" loading="lazy"></div><div class="work-meta"><h3>패스트파이브</h3><span>베네핏 광고</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-05.webp?v=baa786ae" alt="패스트파이브 파이브스팟" loading="lazy"></div><div class="work-meta"><h3>패스트파이브</h3><span>파이브스팟</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-06.webp?v=35e8701b" alt="패스트파이브 OOM 홍보영상" loading="lazy"></div><div class="work-meta"><h3>패스트파이브</h3><span>OOM 홍보영상</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-07.webp?v=cfa34e3a" alt="위쿡 디깅클럽" loading="lazy"></div><div class="work-meta"><h3>위쿡</h3><span>디깅클럽</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-08.webp?v=1f23bf40" alt="슈퍼세이브 인포그래픽" loading="lazy"></div><div class="work-meta"><h3>슈퍼세이브</h3><span>인포그래픽</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/motion/motion-09.webp?v=66319a0a" alt="포비콘 오토적산" loading="lazy"></div><div class="work-meta"><h3>포비콘</h3><span>오토적산</span></div></article></div></div>
+<div class="cat-section"><div class="cat-head"><h2>뮤직비디오</h2></div><div class="work-scroll"><article class="work-card"><div class="work-thumb"><img src="images/mv/mv-01.webp?v=45f1795c" alt="Gavy NJ Happiness" loading="lazy"></div><div class="work-meta"><h3>Gavy NJ</h3><span>Happiness</span></div></article><article class="work-card"><div class="work-thumb"><img src="images/mv/mv-02.webp?v=5b7ce9e5" alt="진소리 술술 풀리네 / 촬영" loading="lazy"></div><div class="work-meta"><h3>진소리</h3><span>술술 풀리네 / 촬영</span></div></article></div></div>
+</section>
+
+<section class="wrap more-work">
+  <div class="more-work-box">
+    <p>이 외에도 더 많은 포트폴리오가 준비되어 있습니다.<br>제작하시려는 내용을 아래 이메일로 보내주시면, 프로젝트에 맞는 포트폴리오를 추천해드립니다.</p>
+    <a class="btn-primary" href="mailto:contact@octaz.studio">contact@octaz.studio</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="contact-row">
+      <div class="contact-col">
+        <h4>Email</h4>
+        <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=contact%40octaz.studio" target="_blank" rel="noopener noreferrer">contact@octaz.studio</a>
+      </div>
+      <div class="contact-col">
+        <h4>Instagram</h4>
+        <a href="https://instagram.com/Studio_octaz" target="_blank" rel="noopener">@Studio_octaz</a>
+      </div>
+      <div class="contact-col">
+        <h4>Blog</h4>
+        <a href="https://blog.naver.com/studioctaz" target="_blank" rel="noopener">blog.naver.com/studioctaz</a>
+      </div>
+      <div class="contact-col">
+        <h4>Location</h4>
+        <a href="https://map.naver.com/p/entry/place/1068906853?placePath=%2Fhome%3Fentry%3Dplt%26from%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202610281521%26locale%3Dko%26svcName%3Dmap_pcv5&amp;searchType=place&amp;lng=126.9163438&amp;lat=37.5525154&amp;c=15.00,0,0,0,dh" target="_blank" rel="noopener">379-4 Seogyo-dong, Mapo-gu, Seoul</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Studio Octaz. All rights reserved.</span>
+      <span>Music · Film · Graphic Design</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('navToggle');
+  const nav = document.getElementById('nav');
+  toggle?.addEventListener('click', () => nav.classList.toggle('open'));
+  nav?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+</script>
+
+<script>
+document.querySelectorAll('.work-scroll').forEach(s=>{
+ const w=document.createElement('div');w.className='sc-wrap';s.parentNode.insertBefore(w,s);w.appendChild(s);
+ [['sc-prev',`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.5 5l-7 7 7 7"/></svg>`,-1],['sc-next',`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 5l7 7-7 7"/></svg>`,1]].forEach(([c,t,d])=>{const b=document.createElement('button');b.className='sc-btn '+c;b.innerHTML=t;b.setAttribute('aria-label',d<0?'이전':'다음');b.onclick=()=>s.scrollBy({left:d*s.clientWidth*.8,behavior:'smooth'});w.appendChild(b);});
+ const upd=()=>{const o=s.scrollWidth>s.clientWidth+4;w.querySelectorAll('.sc-btn').forEach(b=>{b.style.visibility=o?'':'hidden';});};upd();addEventListener('resize',upd);addEventListener('load',upd);if(window.ResizeObserver)new ResizeObserver(upd).observe(s);
+ let down=false,sx=0,sl=0,moved=false;
+ s.addEventListener('mousedown',e=>{down=true;moved=false;sx=e.pageX;sl=s.scrollLeft;});
+ addEventListener('mousemove',e=>{if(!down)return;const dx=e.pageX-sx;if(Math.abs(dx)>4){moved=true;s.classList.add('dragging');}s.scrollLeft=sl-dx;});
+ addEventListener('mouseup',()=>{down=false;s.classList.remove('dragging');});
+ s.addEventListener('click',e=>{if(moved)e.preventDefault();},true);
+});
+</script>
+<script>
+/* 최신 버전 확인: 방문 시 서버의 build-id와 비교해 다르면 한 번만 새로고침 (HTTP/HTTPS에서만 동작) */
+(function(){
+  if(!/^https?:$/.test(location.protocol))return;
+  var m=document.querySelector('meta[name="build-id"]');if(!m)return;
+  fetch(location.pathname,{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
+    var x=t.match(/<meta name="build-id" content="([^"]+)"/);
+    if(!x||x[1]===m.content)return;
+    try{if(sessionStorage.getItem('octaz-build')===x[1])return;sessionStorage.setItem('octaz-build',x[1]);}catch(e){return;}
+    location.reload();
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>

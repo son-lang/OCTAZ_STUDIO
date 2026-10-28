@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="build-id" content="bd4743de">
+<meta name="build-id" content="46cd7980">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Work — STUDIO OCTAZ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -169,6 +169,19 @@
     .page-head::after{margin-top:48px;}
     .more-work-box p{font-size:17px;max-width:none;}
   }
+
+  /* 모바일 하단 안내 영역 (데스크톱 영향 없음) */
+  @media (max-width:860px){
+    .more-work{padding-bottom:44px;}
+    .more-work-box{padding-top:32px;gap:20px;align-items:flex-start;}
+    .more-work-box p{font-size:16px;line-height:1.65;max-width:30em;word-break:keep-all;text-wrap:pretty;}
+    .more-work-box p br{display:none;}
+    .more-work-box .btn-primary{padding:11px 20px;font-size:13px;gap:8px;}
+    footer .contact-row{padding-top:32px;gap:22px 24px;}
+    footer .contact-col h4{margin-bottom:6px;}
+    footer .contact-col a,footer .contact-col p{line-height:1.7;}
+    .foot-bottom{margin-top:40px;padding-top:20px;}
+  }
 </style>
 </head>
 <body>
@@ -202,7 +215,7 @@
 
 <section class="wrap more-work">
   <div class="more-work-box">
-    <p>이 외에도 더 많은 포트폴리오가 준비되어 있습니다.<br>제작하시려는 내용을 아래 이메일로 보내주시면, 프로젝트에 맞는 포트폴리오를 추천해드립니다.</p>
+    <p>이 외에도 더 많은 포트폴리오가 준비되어 있습니다. <br>제작하시려는 내용을 아래 이메일로 보내주시면, 프로젝트에 맞는 포트폴리오를 추천해드립니다.</p>
     <a class="btn-primary" href="mailto:contact@octaz.studio">contact@octaz.studio</a>
   </div>
 </section>
